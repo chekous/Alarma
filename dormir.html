@@ -1,0 +1,140 @@
+<html>
+    <head>
+        <title>NAPP</title>
+        <meta charset="utf-8">
+        <link href="estilo.css" rel="stylesheet" type="text/css">
+        <meta name="viewport" content="width=device-width, user-scalable=no">
+        
+         </head>
+    
+            <body class="bg1">
+              <div class="encabezado">
+                  NAPP
+                </div>
+                
+                <div class="tabs">
+                    <button id="tabDormir" class="tab activo" onclick="irA('dormir')">DORMIR</button>
+                    <button id="tabSiesta" class="tab" onclick="irA('siesta')">SIESTA</button>
+                </div>
+                
+                <div class="contenido">
+                    <button onclick="btnSwitch('dormir')"  id="dormir" class="switch izq switch-activo">DORMIR</button>
+                    <button onclick="btnSwitch('despertar')"  id="despertar" class="switch der">DESPERTAR</button>
+                    
+                    
+                    <input type="time" placeholder="00:00" class="tiempo" id="horaDespertador" onchange="calcularDormir()">
+                    
+                    <p id="textoHora">Deberías de despertar a las 00:00 a.m.</p>
+                    <button class="boton">Colocar Alarma</button>
+                </div>
+                
+                <div class="contenido2">
+                    <input type="number" class="tiempo" id="tiempoSiesta">
+                    <button class="boton">Comenzar</button>
+                    <p class="tiempo-restante"></p>
+                    <button class="boton" onlclick="comenzarSiesta()">COMENZAR SIESTA</button>
+                </div>
+                
+                <audio id="alarma">
+                    <source src="alarma.mp3" type="audio/mp3">
+                </audio>
+                
+        </body>
+    
+    <script>
+        
+        var tipoActual = 'dormir';
+        function btnSwitch(tipo){
+                    document.getElementById(tipoActual).classList.remove('switch-activo');
+                    document.getElementById(tipo).classList.add('switch-activo');
+                    tipoActual = tipo;
+            
+            if(tipo=="dormir"){
+                document.querySelector('.bg1').classList.remove('bg2')
+                document.getElementById('horaDespertador').setAttribute('onchange', 'calcularDormir()')
+    
+            }else{
+                document.querySelector('.bg1').classList.add('bg2');
+                document.getElementById('horaDespertador').setAttribute('onchange', 'calcularDespertar()')
+            }
+                
+        }
+        
+        function calcularDormir(){
+             h = document.getElementById('horaDespertador').value;
+                  hora = h.split(':');
+                if(parseInt(hora[0])<=17){
+                horaDespertar = parseInt(hora[0]) + 7;
+                console.log(horaDespertar);
+                }else{
+                    horaDespertar = parseInt(hora[0]) - 17;
+                    console.log(horaDespertar);
+                }
+                
+                document.getElementById('textoHora').innerHTML = "Deberías de despertar a las " + horaDespertar + ":" + hora[1] + "hrs.";
+        }
+            //JOVENES ADULTOS (7 HORAS)
+            
+            function calcularDespertar(){
+             h = document.getElementById('horaDespertador').value;
+                console.log(h);
+                hora = h.split(':');
+                if(parseInt(hora[0])>=7){
+                    horaDespertar = parseInt(hora[0]) - 7;
+                    console.log(horaDespertar);
+                }else{
+                    horaDespertar = parseInt(hora[0]) + 17;
+                    console.log(horaDespertar);
+                }
+            //JOVENES ADULTOS (7 HORAS)
+               
+        }
+        function irA(pagina){
+            if(pagina == "dormir"){
+                document.querySelector('.contenido').style.left="0px";
+                document.querySelector('.contenido').style.left="0px";
+                document.querySelector('.contenido2').style.left="100%";
+                document.getElementById('.tabDormir').classList.add('activo');
+                document.getElementById('tabSiesta').classList.remove('activo');
+                
+            }else{
+                document.querySelector('.contenido').style.transition="1s all";
+                document.querySelector('.contenido').style.left="-100%";
+                document.querySelector('contenido2').style.left="0px";
+                document.getElementById('tabDormir').classList.remove('activo');
+                document.getElementById('tabSiesta').classList.add('activo');
+            }
+        }
+        
+        function comenzarSiesta(){
+            var tiempoSiesta = document.getElementById('tiempoSiesta').value;
+            tiempoRestante.innerHTML = tiempoSiesta;
+            calcularRestante(tiempoSiesta);
+        }
+        var segundos = 60;
+        var segundosTranscurridos= 0;
+        
+        function calcularRestante(tiempoSiesta){
+            document.querySelector('.bg1').style.opacity=".1";
+            document.querySelector('.bg1').classList.add('oscuro');
+            if(segundosTranscurridos==0 && (tiempoSiesta+1)==0){
+                document.querySelector('.tiempo-restante').innerHTML="";
+                document.querySelector('.bg1').style.opacity="1";
+                document.querySelector('.bg1').classList.remove('oscuro');
+                document.getElementById('alarma').play();
+            }else{
+            segundosTranscurridos++;
+            if(segundosTranscurridos==60){
+                segundosTranscurridos = 0;
+                tiempoSiesta--;
+            }
+            if(tiempoSiesta>=0){
+            segundosRestantes = segundos-segundosTranscurridos;
+            document.querySelector('.tiempo-restante').innerHTML = "Tiempo restante: "+tiempoSiesta+":"+segundosRestantes;
+            
+            }
+            setTimeout(function(){calcularRestante(tiempoSiesta)}, 1000)
+        }
+    </script>
+    
+</html>
